@@ -57,6 +57,7 @@ public static class LoennShims {
             }
         }
 
+        Snowberry.Log(LogLevel.Warn, $"Loenn plugin tried to require missing module: '{name}'. This may cause plugin errors.");
         return "\n\tCould not find Loenn library: " + name;
     }
 

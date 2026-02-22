@@ -1,6 +1,6 @@
 - Name: Popstarberry
   Version: 0.2.0
-  DLL: bin/Snowberry.dll
+  DLL: bin/net8.0/Snowberry.dll
   Dependencies:
     - Name: Everest
       Version: 1.4866.0
