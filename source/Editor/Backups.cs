@@ -51,7 +51,10 @@ public static class Backups{
                     using var zip = ZipFile.Read(file);
                     if(zip.ContainsEntry(MetaFilename) && zip.ContainsEntry(MapFilename)){
                         var metaEntry = zip[MetaFilename];
-                        string data = metaEntry.AlternateEncoding.GetString(metaEntry.ExtractStream().ToArray());
+                        using var stream = metaEntry.OpenReader();
+                        using var memoryStream = new MemoryStream();
+                        stream.CopyTo(memoryStream);
+                        string data = metaEntry.AlternateEncoding.GetString(memoryStream.ToArray());
                         Meta meta = YamlHelper.Deserializer.Deserialize<Meta>(data);
                         ret.Add(new Backup{
                             Path = file,

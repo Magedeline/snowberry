@@ -105,11 +105,11 @@ public interface PluginOption {
 
 public class FieldOption(FieldInfo field, string key) : PluginOption {
 
-    public object GetValue(Plugin from) => field.GetValue(from);
+    public object GetValue(Plugin from) => @field.GetValue(from);
 
-    public void SetValue(Plugin on, object value) => field.SetValue(on, value);
+    public void SetValue(Plugin on, object value) => @field.SetValue(on, value);
 
-    public Type FieldType => field.FieldType;
+    public Type FieldType => @field.FieldType;
 
     public string Key { get; } = key;
 
