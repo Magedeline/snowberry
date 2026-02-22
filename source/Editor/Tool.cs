@@ -15,7 +15,8 @@ public abstract class Tool{
         new PlacementTool(),
         new StylegroundsTool(),
         new MapInfoTool(),
-        new PlaytestTool()
+        new PlaytestTool(),
+        new GeneratorTool()
     };
 
     public static readonly IList<Tool> Tools = new List<Tool>(BaseTools);

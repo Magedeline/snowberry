@@ -177,11 +177,15 @@ public class PlacementTool : Tool {
         }
     }
 
-    public static int AllocateId() =>
-        // TODO: find lowest unoccupied ID
-        Editor.Instance.Map.Rooms.SelectMany(k => k.AllEntities)
-            .Select(item => item.EntityID)
-            .Concat(new[]{ 0 }).Max() + 1;
+    public static int AllocateId() {
+        // Find lowest unoccupied ID instead of always incrementing
+        var usedIds = new HashSet<int>(
+            Editor.Instance.Map.Rooms.SelectMany(k => k.AllEntities)
+                .Select(item => item.EntityID));
+        int id = 1;
+        while (usedIds.Contains(id)) id++;
+        return id;
+    }
 
     private void RefreshPreview(bool changedPlacement) {
         bool middlePan = Snowberry.Settings.MiddleClickPan;

@@ -1,7 +1,7 @@
-SNOWBERRY_SNOWBERRY={# d12626}Snowberry{#}
+SNOWBERRY_SNOWBERRY={# d12626}Popstarberry{#}
 
 # *** Celeste Menu ***
-    EDITOR_MAINMENU= Snowberry
+    EDITOR_MAINMENU= Popstarberry
 
 # *** Main Menu ***
     SNOWBERRY_MAINMENU_YES=                     yes
@@ -26,7 +26,7 @@ SNOWBERRY_SNOWBERRY={# d12626}Snowberry{#}
     SNOWBERRY_MAINMENU_EXIT=                    ← exit
 
     SNOWBERRY_MAINMENU_SETTINGS=                settings
-    SNOWBERRY_MAINMENU_CREDITS=                 by catapillie, luna, Viv, and others
+    SNOWBERRY_MAINMENU_CREDITS=                 popstarberry - by catapillie, luna, Viv, and others
 
 # *** Editor ***
     SNOWBERRY_EDITOR_RETURN=                    return to map
@@ -273,3 +273,30 @@ SNOWBERRY_SNOWBERRY={# d12626}Snowberry{#}
 
     SNOWBERRY_RETURN_TO_EDITOR=                 Return to Editor
     SNOWBERRY_QUIT=                             Quit
+
+# *** Generator Tool ***
+    SNOWBERRY_EDITOR_TOOL_GENERATOR=            generator
+
+    SNOWBERRY_GENERATOR_TITLE=                  procedural map generator
+    SNOWBERRY_GENERATOR_SEED=                   seed (0 = random)
+    SNOWBERRY_GENERATOR_ROOMS=                  room count
+    SNOWBERRY_GENERATOR_DIFFICULTY=             difficulty
+    SNOWBERRY_GENERATOR_THEME=                  theme preset
+    SNOWBERRY_GENERATOR_LAYOUT=                 linear path
+    SNOWBERRY_GENERATOR_CONTENT=                content options :
+    SNOWBERRY_GENERATOR_STRAWBERRIES=           include strawberries
+    SNOWBERRY_GENERATOR_SPINNERS=               include spinners
+    SNOWBERRY_GENERATOR_SPIKES=                 include spikes
+    SNOWBERRY_GENERATOR_SPRINGS=                include springs
+    SNOWBERRY_GENERATOR_CRUMBLE=                include crumble blocks
+    SNOWBERRY_GENERATOR_DENSITY=                density settings :
+    SNOWBERRY_GENERATOR_HAZARD_DENSITY=         hazard density %
+    SNOWBERRY_GENERATOR_PLATFORM_DENSITY=       platform density %
+    SNOWBERRY_GENERATOR_GENERATE=               ★ generate map
+    SNOWBERRY_GENERATOR_VALIDATE=               validate map
+    SNOWBERRY_GENERATOR_SUCCESS=                map generated successfully!
+    SNOWBERRY_GENERATOR_VALID=                  map is valid!
+    SNOWBERRY_GENERATOR_NO_MAP=                 no map to validate
+
+# *** Grid Overlay ***
+    SNOWBERRY_GRID_TOGGLE=                      toggle grid (ctrl-G)

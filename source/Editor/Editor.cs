@@ -154,7 +154,7 @@ public class Editor : UIScene {
     public static int VanillaLevelID { get; private set; }
     public static AreaKey? From;
 
-    private Editor(Map map) {
+    internal Editor(Map map) {
         Map = map;
 
         SelectedRoom = null;
@@ -521,6 +521,10 @@ public class Editor : UIScene {
                 saveSettings = true;
             }
 
+            if (MInput.Keyboard.Pressed(Keys.G) && !MInput.Keyboard.Check(Keys.LeftShift, Keys.RightShift)) {
+                GridOverlay.Enabled = !GridOverlay.Enabled;
+            }
+
             if (saveSettings)
                 Snowberry.Instance.SaveSettings();
 
@@ -603,6 +607,7 @@ public class Editor : UIScene {
 
         Engine.Instance.GraphicsDevice.Clear(BG);
         Map.Render(Camera);
+        GridOverlay.Render(Camera);
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp,
             DepthStencilState.None, RasterizerState.CullNone, null, Camera.Matrix);
         CurrentTool.RenderWorldSpace();
