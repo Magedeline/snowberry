@@ -45,6 +45,19 @@ public static class LoennShims {
     public static object EverestRequire(string name) {
         // name could be "mods", "structs.rectangle", etc
 
+        // Handle ChroniaHelper specific entities
+        if (name.StartsWith("ChroniaHelper/") || name.Contains("CustomFakeWall")) {
+            try {
+                var h = Everest.LuaLoader.Context.DoString($"return require(\"LoennHelpers/entities/CustomFakeWall\")").FirstOrDefault();
+                if (h != null) {
+                    Snowberry.Log(LogLevel.Info, $"Loaded Snowberry compatibility layer for ChroniaHelper: {name}");
+                    return h;
+                }
+            } catch (LuaScriptException e) {
+                Snowberry.Log(LogLevel.Warn, $"Failed to load ChroniaHelper compatibility layer for {name}: {e}");
+            }
+        }
+
         // if you want something, check LoennHelpers/
         try {
             var h = Everest.LuaLoader.Context.DoString($"return require(\"LoennHelpers/{name.Replace(".", "/")}\")").FirstOrDefault();
@@ -144,5 +157,37 @@ public static class LoennShims {
         bool fg = layer.Equals("tilesFg", StringComparison.InvariantCultureIgnoreCase);
         char keyC = key.ToString()[0];
         return (fg ? GFX.FGAutotiler : GFX.BGAutotiler).GenerateBoxStable(keyC, (int)(width / 8f), (int)(height / 8f)).TileGrid.Tiles;
+    }
+
+    [UsedImplicitly] // invoked via lua
+    public static VirtualMap<MTexture> SafeAutotile(string layer, object key, object width, object height) {
+        try {
+            layer = layer ?? "tilesFg";
+            string keyStr = key?.ToString() ?? "3";
+            char keyC = keyStr.Length > 0 ? keyStr[0] : '3';
+            
+            float w = Math.Max(8f, (float)toDouble(width ?? 8));
+            float h = Math.Max(8f, (float)toDouble(height ?? 8));
+            
+            bool fg = layer.Equals("tilesFg", StringComparison.InvariantCultureIgnoreCase);
+            return (fg ? GFX.FGAutotiler : GFX.BGAutotiler).GenerateBoxStable(keyC, (int)(w / 8f), (int)(h / 8f)).TileGrid.Tiles;
+        } catch (Exception e) {
+            Snowberry.Log(LogLevel.Warn, $"SafeAutotile failed with parameters layer={layer}, key={key}, width={width}, height={height}: {e}");
+            // Return a minimal 1x1 tile as fallback
+            return GFX.FGAutotiler.GenerateBoxStable('3', 1, 1).TileGrid.Tiles;
+        }
+    }
+
+    [UsedImplicitly] // invoked via lua
+    public static object SafeEntityProperty(LuaTable entity, string property, object defaultValue) {
+        try {
+            if (entity != null && entity[property] != null) {
+                return entity[property];
+            }
+            return defaultValue;
+        } catch (Exception e) {
+            Snowberry.Log(LogLevel.Verbose, $"SafeEntityProperty failed for property '{property}': {e}");
+            return defaultValue;
+        }
     }
 }

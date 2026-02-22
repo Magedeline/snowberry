@@ -113,6 +113,21 @@ public static class LoennPluginLoader {
 
         curMod = null;
 
+        // Load ChroniaHelper compatibility layer if ChroniaHelper is installed
+        if (Everest.Modules.Any(mod => mod.Metadata.Name == "ChroniaHelper")) {
+            try {
+                var chroniaPlugin = Everest.LuaLoader.Context.DoString("return require(\"LoennHelpers/entities/CustomFakeWall\")")?.FirstOrDefault() as LuaTable;
+                if (chroniaPlugin != null && chroniaPlugin["name"] is string name) {
+                    plugins[name] = chroniaPlugin;
+                    Snowberry.LogInfo($"Loaded ChroniaHelper compatibility layer: {name}");
+                } else {
+                    Snowberry.Log(LogLevel.Warn, "ChroniaHelper compatibility layer failed to load properly");
+                }
+            } catch (Exception e) {
+                Snowberry.Log(LogLevel.Error, $"Failed to load ChroniaHelper compatibility layer: {e}");
+            }
+        }
+
         Snowberry.LogInfo($"Found {plugins.Count} Loenn plugins");
         Snowberry.Log(LogLevel.Info, $"Loaded {Dialog.Count} dialog entries from language files for Loenn plugins.");
 

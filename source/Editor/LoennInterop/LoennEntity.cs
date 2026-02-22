@@ -265,35 +265,59 @@ public partial class LoennEntity : Entity, DictBackedPlugin {
     }
 
     private static LuaTable WrapTable(IDictionary<string, object> dict) {
-        var table = EmptyTable();
-        if (table != null)
-            foreach (var pair in dict)
-                table[pair.Key] = ObjectToStr(pair.Value);
-        return table;
+        try {
+            var table = EmptyTable();
+            if (table != null && dict != null) {
+                foreach (var pair in dict) {
+                    if (pair.Key != null) {
+                        table[pair.Key] = ObjectToStr(pair.Value);
+                    }
+                }
+            }
+            return table;
+        } catch (Exception e) {
+            Snowberry.Log(LogLevel.Error, $"Error in WrapTable: {e}");
+            return EmptyTable(); // Return empty table as fallback
+        }
     }
 
     private LuaTable WrapEntity() {
-        var table = WrapTable(Attrs.OrElse(((LoennEntityPluginInfo)Info).Defaults));
+        try {
+            // Safely get attributes with null checks
+            var attrs = Attrs ?? new Dictionary<string, object>();
+            var defaults = ((LoennEntityPluginInfo)Info)?.Defaults ?? new Dictionary<string, object>();
+            var combined = attrs.OrElse(defaults) ?? new Dictionary<string, object>();
+            
+            var table = WrapTable(combined);
 
-        if (table != null) {
-            table["name"] = Name;
-            table["width"] = Width;
-            table["height"] = Height;
-            table["x"] = X;
-            table["y"] = Y;
-            table["nodes"] = EmptyTable();
+            if (table != null) {
+                table["name"] = Name ?? "unknown";
+                table["width"] = Width > 0 ? Width : 8;
+                table["height"] = Height > 0 ? Height : 8;
+                table["x"] = X;
+                table["y"] = Y;
+                table["nodes"] = EmptyTable();
 
-            for (var idx = 0; idx < Nodes.Count; idx++) {
-                var node = Nodes[idx];
-                var nodeTable = EmptyTable();
-                nodeTable["x"] = node.X;
-                nodeTable["y"] = node.Y;
-
-                ((LuaTable)table["nodes"])[idx + 1] = nodeTable;
+                if (Nodes != null) {
+                    for (var idx = 0; idx < Nodes.Count; idx++) {
+                        var node = Nodes[idx];
+                        if (node != null) {
+                            var nodeTable = EmptyTable();
+                            if (nodeTable != null) {
+                                nodeTable["x"] = node.X;
+                                nodeTable["y"] = node.Y;
+                                ((LuaTable)table["nodes"])[idx + 1] = nodeTable;
+                            }
+                        }
+                    }
+                }
             }
-        }
 
-        return table;
+            return table;
+        } catch (Exception e) {
+            Snowberry.Log(LogLevel.Error, $"Error in WrapEntity for {Name}: {e}");
+            return EmptyTable(); // Return empty table as fallback
+        }
     }
 
     private float Float<T>(LuaTable from, T index, float def = 1f) {
