@@ -38,6 +38,7 @@ public static class LoennPluginLoader {
         Snowberry.LogInfo("Trying to load Loenn plugins");
 
         Dictionary<string, LuaTable> plugins = new();
+        Dictionary<string, string> pluginMods = new();
         HashSet<string> triggers = [], effects = [];
 
         if(!Everest.Content.Mods.SelectMany(x => x.List).Any(asset => asset.PathVirtual.Replace('\\', '/').StartsWith("Loenn/")))
@@ -67,6 +68,7 @@ public static class LoennPluginLoader {
                                     foreach (var table in pluginsFromScript) {
                                         if (table["name"] is string name) {
                                             plugins[name] = table;
+                                            pluginMods[name] = curMod;
                                             if (path.StartsWith("Loenn/triggers/"))
                                                 triggers.Add(name);
                                             else if (path.StartsWith("Loenn/effects/"))
@@ -113,21 +115,6 @@ public static class LoennPluginLoader {
 
         curMod = null;
 
-        // Load ChroniaHelper compatibility layer if ChroniaHelper is installed
-        if (Everest.Modules.Any(mod => mod.Metadata.Name == "ChroniaHelper")) {
-            try {
-                var chroniaPlugin = Everest.LuaLoader.Context.DoString("return require(\"LoennHelpers/entities/CustomFakeWall\")")?.FirstOrDefault() as LuaTable;
-                if (chroniaPlugin != null && chroniaPlugin["name"] is string name) {
-                    plugins[name] = chroniaPlugin;
-                    Snowberry.LogInfo($"Loaded ChroniaHelper compatibility layer: {name}");
-                } else {
-                    Snowberry.Log(LogLevel.Warn, "ChroniaHelper compatibility layer failed to load properly");
-                }
-            } catch (Exception e) {
-                Snowberry.Log(LogLevel.Error, $"Failed to load ChroniaHelper compatibility layer: {e}");
-            }
-        }
-
         Snowberry.LogInfo($"Found {plugins.Count} Loenn plugins");
         Snowberry.Log(LogLevel.Info, $"Loaded {Dialog.Count} dialog entries from language files for Loenn plugins.");
 
@@ -136,7 +123,8 @@ public static class LoennPluginLoader {
                 PluginInfo.Stylegrounds[plugin.Key] = new LoennStylegroundPluginInfo(plugin.Key, plugin.Value);
             }else{
                 bool isTrigger = triggers.Contains(plugin.Key);
-                PluginInfo.Entities[plugin.Key] = new LoennEntityPluginInfo(plugin.Key, plugin.Value, isTrigger);
+                pluginMods.TryGetValue(plugin.Key, out var pluginMod);
+                PluginInfo.Entities[plugin.Key] = new LoennEntityPluginInfo(plugin.Key, plugin.Value, isTrigger, pluginMod);
 
                 if (plugin.Value["placements"] is LuaTable placements)
                     if (placements.Keys.OfType<string>().Contains("name")) {

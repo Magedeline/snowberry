@@ -45,19 +45,6 @@ public static class LoennShims {
     public static object EverestRequire(string name) {
         // name could be "mods", "structs.rectangle", etc
 
-        // Handle ChroniaHelper specific entities
-        if (name.StartsWith("ChroniaHelper/") || name.Contains("CustomFakeWall")) {
-            try {
-                var h = Everest.LuaLoader.Context.DoString($"return require(\"LoennHelpers/entities/CustomFakeWall\")").FirstOrDefault();
-                if (h != null) {
-                    Snowberry.Log(LogLevel.Info, $"Loaded Snowberry compatibility layer for ChroniaHelper: {name}");
-                    return h;
-                }
-            } catch (LuaScriptException e) {
-                Snowberry.Log(LogLevel.Warn, $"Failed to load ChroniaHelper compatibility layer for {name}: {e}");
-            }
-        }
-
         // if you want something, check LoennHelpers/
         try {
             var h = Everest.LuaLoader.Context.DoString($"return require(\"LoennHelpers/{name.Replace(".", "/")}\")").FirstOrDefault();

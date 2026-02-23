@@ -19,7 +19,7 @@ public static class Fonts {
     }
 
     private static Font LoadFont(string name) {
-        ModAsset data = Everest.Content.Get($"Snowberry:/Content/fonts/{name}Data");
+        ModAsset data = Everest.Content.Get($"Popstarberry:/Content/fonts/{name}Data");
 
         Texture2D texture = GFX.Gui[$"Snowberry/fonts/{name}"].Texture.Texture_Safe;
 

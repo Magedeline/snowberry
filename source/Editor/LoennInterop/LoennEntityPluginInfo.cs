@@ -10,15 +10,17 @@ public class LoennEntityPluginInfo : PluginInfo, DefaultedPluginInfo {
 
     protected readonly LuaTable Plugin;
     protected readonly bool IsTrigger;
+    protected readonly string ModName;
 
     // these properties aren't saved with the rest (handled by snowberry) but affect resizability
     public readonly bool HasWidth, HasHeight;
 
     public Dictionary<string, object> Defaults = new();
 
-    public LoennEntityPluginInfo(string name, LuaTable plugin, bool isTrigger) : base(name, typeof(LoennEntity), null, CelesteEverest.INSTANCE) {
+    public LoennEntityPluginInfo(string name, LuaTable plugin, bool isTrigger, string modName = null) : base(name, typeof(LoennEntity), null, CelesteEverest.INSTANCE) {
         Plugin = plugin;
         IsTrigger = isTrigger;
+        ModName = modName;
 
         if (plugin["placements"] is LuaTable placements) {
             if (placements.Keys.OfType<string>().Any(k => k.Equals("data"))) {
@@ -50,8 +52,15 @@ public class LoennEntityPluginInfo : PluginInfo, DefaultedPluginInfo {
 
         // field info may be a function, but we don't dynamically call this
         object fieldInfos = plugin["fieldInformation"];
-        if (fieldInfos is LuaFunction fn)
-            fieldInfos = fn.Call(LoennEntity.EmptyTable()).FirstOrDefault();
+        if (fieldInfos is LuaFunction fn) {
+            var prevMod = LoennPluginLoader.curMod;
+            LoennPluginLoader.curMod = ModName;
+            try {
+                fieldInfos = fn.Call(LoennEntity.EmptyTable()).FirstOrDefault();
+            } finally {
+                LoennPluginLoader.curMod = prevMod;
+            }
+        }
         if (fieldInfos is LuaTable fieldInfosTbl) {
             foreach (var fieldKey in fieldInfosTbl.Keys) {
                 if (fieldKey is string fieldName && fieldInfosTbl[fieldKey] is LuaTable fieldInfo) {
