@@ -62,9 +62,15 @@ public class GeneratorTool : Tool {
         };
         scrollPane.AddBelow(title, yOffset);
 
+        // === Map Name ===
+        scrollPane.AddBelow(new UILabel(Dialog.Clean("SNOWBERRY_GENERATOR_MAP_NAME")), yOffset);
+        var mapNameField = new UITextField(Fonts.Regular, width - 20, config.MapName);
+        mapNameField.OnInputChange = v => config.MapName = v;
+        scrollPane.AddBelow(mapNameField, new Vector2(5, 2));
+
         // === Seed ===
         scrollPane.AddBelow(new UILabel(Dialog.Clean("SNOWBERRY_GENERATOR_SEED")), yOffset);
-        var seedField = new UIValueTextField<int>(Fonts.Regular, width - 20, "0");
+        var seedField = new UIValueTextField<int>(Fonts.Regular, width - 20, config.Seed.ToString());
         seedField.OnValidInputChange = v => config.Seed = v;
         scrollPane.AddBelow(seedField, new Vector2(5, 2));
 
@@ -79,12 +85,24 @@ public class GeneratorTool : Tool {
         };
         scrollPane.AddBelow(roomSlider, new Vector2(5, 2));
 
+        // === Side Height ===
+        scrollPane.AddBelow(new UILabel(Dialog.Clean("SNOWBERRY_GENERATOR_SIDE_HEIGHT")), yOffset);
+        var heightSlider = new UISlider {
+            Width = width - 20,
+            Min = 15,
+            Max = 50,
+            Value = config.SideHeight,
+            OnInputChanged = v => config.SideHeight = (int)v
+        };
+        scrollPane.AddBelow(heightSlider, new Vector2(5, 2));
+
         // === Difficulty ===
         scrollPane.AddBelow(new UILabel(Dialog.Clean("SNOWBERRY_GENERATOR_DIFFICULTY")), yOffset);
         var diffDropdown = UIDropdown.OfEnum<ProceduralGenerator.Difficulty>(
             Fonts.Regular,
             v => config.Difficulty = v
         );
+        diffDropdown.Width = width - 20;
         scrollPane.AddBelow(diffDropdown, new Vector2(5, 2));
 
         // === Theme ===
@@ -93,6 +111,7 @@ public class GeneratorTool : Tool {
             Fonts.Regular,
             v => config.Theme = v
         );
+        themeDropdown.Width = width - 20;
         scrollPane.AddBelow(themeDropdown, new Vector2(5, 2));
 
         // === Layout ===

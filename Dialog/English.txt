@@ -278,8 +278,10 @@ SNOWBERRY_SNOWBERRY={# d12626}Popstarberry{#}
     SNOWBERRY_EDITOR_TOOL_GENERATOR=            generator
 
     SNOWBERRY_GENERATOR_TITLE=                  procedural map generator
+    SNOWBERRY_GENERATOR_MAP_NAME=               map name
     SNOWBERRY_GENERATOR_SEED=                   seed (0 = random)
     SNOWBERRY_GENERATOR_ROOMS=                  room count
+    SNOWBERRY_GENERATOR_SIDE_HEIGHT=            side height
     SNOWBERRY_GENERATOR_DIFFICULTY=             difficulty
     SNOWBERRY_GENERATOR_THEME=                  theme preset
     SNOWBERRY_GENERATOR_LAYOUT=                 linear path

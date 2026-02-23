@@ -59,6 +59,7 @@ public class ProceduralGenerator {
         public float HazardDensity { get; set; } = 0.3f;
         public float PlatformDensity { get; set; } = 0.5f;
         public string MapName { get; set; } = "procedural_map";
+        public int SideHeight { get; set; } = 23;
     }
 
     private Random rng;
@@ -150,14 +151,15 @@ public class ProceduralGenerator {
 
     private Point CalculateRoomSize(RoomShape shape) {
         int difficultyScale = (int)config.Difficulty + 1;
+        int baseHeight = config.SideHeight;
         return shape switch {
-            RoomShape.Horizontal => new Point(30 + rng.Next(10) * difficultyScale, 23),
-            RoomShape.Vertical => new Point(25, 30 + rng.Next(10) * difficultyScale),
-            RoomShape.LShape => new Point(30 + rng.Next(5), 30 + rng.Next(5)),
-            RoomShape.Square => new Point(25 + rng.Next(5), 25 + rng.Next(5)),
-            RoomShape.TallShaft => new Point(20, 40 + rng.Next(15) * difficultyScale),
-            RoomShape.WideHall => new Point(40 + rng.Next(15) * difficultyScale, 20),
-            _ => new Point(30, 23)
+            RoomShape.Horizontal => new Point(30 + rng.Next(10) * difficultyScale, baseHeight),
+            RoomShape.Vertical => new Point(25, baseHeight + rng.Next(10) * difficultyScale),
+            RoomShape.LShape => new Point(30 + rng.Next(5), baseHeight + rng.Next(5)),
+            RoomShape.Square => new Point(25 + rng.Next(5), baseHeight + rng.Next(5) - 3),
+            RoomShape.TallShaft => new Point(20, baseHeight + rng.Next(15) * difficultyScale + 10),
+            RoomShape.WideHall => new Point(40 + rng.Next(15) * difficultyScale, Math.Max(15, baseHeight - 5)),
+            _ => new Point(30, baseHeight)
         };
     }
 
